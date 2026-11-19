@@ -5,12 +5,18 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "sipl-toolkit"
 version = "0.1.0"
-description = "SIPL Language Toolkit: parser, AST, interpreter, trace, CLI, and DAP debugger"
+description = "SIPL Language Toolkit: parser, AST, interpreter, trace, CLI, and visualization"
 readme = "README.md"
+license = { text = "MIT" }
+authors = [{ name = "Твоє Ім'я" }]
 requires-python = ">=3.11"
 dependencies = [
     "lark>=1.1.9",
 ]
+
+[project.urls]
+Homepage = "https://github.com/bohdanzekter/ProjectTP"
+Repository = "https://github.com/bohdanzekter/ProjectTP"
 
 [project.optional-dependencies]
 dev = [
@@ -43,3 +49,6 @@ select = ["E", "F", "I", "UP", "B"]
 python_version = "3.11"
 strict = true
 mypy_path = "src"
+
+[tool.setuptools.package-data]
+sipl = ["sipl.lark"]
