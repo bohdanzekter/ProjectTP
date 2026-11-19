@@ -12,7 +12,17 @@ from typing import Any
 from sipl import __version__
 from sipl.errors import SiplRuntimeError, SiplSyntaxError
 from sipl.interpreter import Interpreter, TraceEvent
-from sipl.parser import parse
+from sipl.parser import parse, parse_to_concrete_tree
+from sipl.visualization import (
+    VisNode,
+    ast_to_vis,
+    parse_tree_to_vis,
+    render_comparison_html,
+    render_dot,
+    render_json,
+    render_svg,
+    render_text,
+)
 
 EXIT_OK = 0
 EXIT_SYNTAX_ERROR = 1
@@ -231,6 +241,53 @@ def _cmd_trace(args: argparse.Namespace) -> int:
             print(ev.to_dict())
     return EXIT_OK
 
+def _render_vis(root: VisNode, fmt: str, title: str) -> str:
+    if fmt == "text":
+        return render_text(root)
+    if fmt == "json":
+        return render_json(root)
+    if fmt == "dot":
+        return render_dot(root, title=title)
+    if fmt == "svg":
+        return render_svg(root, title=title)
+    raise CliInputError(f"Unsupported visualization format: {fmt}")
+
+
+def _write_or_print(content: str, out_path: str | None) -> None:
+    if out_path is not None:
+        Path(out_path).write_text(content, encoding="utf-8")
+        print(f"Written to {out_path}")
+    else:
+        print(content)
+
+
+def _cmd_vis_tree(args: argparse.Namespace) -> int:
+    source = _read_source(args.file)
+    tree = parse_to_concrete_tree(source, filename=args.file)
+    vis = parse_tree_to_vis(tree, source, filename=args.file)
+    rendered = _render_vis(vis, args.format, title=f"Parse Tree: {args.file}")
+    _write_or_print(rendered, args.output)
+    return EXIT_OK
+
+
+def _cmd_vis_ast(args: argparse.Namespace) -> int:
+    source = _read_source(args.file)
+    program = parse(source, filename=args.file)
+    vis = ast_to_vis(program, source)
+    rendered = _render_vis(vis, args.format, title=f"AST: {args.file}")
+    _write_or_print(rendered, args.output)
+    return EXIT_OK
+
+
+def _cmd_vis_compare(args: argparse.Namespace) -> int:
+    source = _read_source(args.file)
+    tree = parse_to_concrete_tree(source, filename=args.file)
+    program = parse(source, filename=args.file)
+    pt_vis = parse_tree_to_vis(tree, source, filename=args.file)
+    ast_vis = ast_to_vis(program, source)
+    html_out = render_comparison_html(source, pt_vis, ast_vis, filename=args.file)
+    _write_or_print(html_out, args.output)
+    return EXIT_OK
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
@@ -277,6 +334,27 @@ def build_parser() -> argparse.ArgumentParser:
         )
         sub.add_argument("--json", action="store_true", help="Output structured JSON")
 
+    for cmd_name, help_text in (
+            ("vis-tree", "Visualize concrete Parse Tree (text/json/dot/svg)"),
+            ("vis-ast", "Visualize abstract syntax tree (text/json/dot/svg)"),
+    ):
+        sub_v = subparsers.add_parser(cmd_name, help=help_text)
+        sub_v.add_argument("file", help="Path to .sipl file")
+        sub_v.add_argument(
+            "--format",
+            choices=["text", "json", "dot", "svg"],
+            default="text",
+            help="Output format (default: text)",
+        )
+        sub_v.add_argument("-o", "--output", help="Optional output file path")
+
+    p_cmp = subparsers.add_parser(
+        "vis-compare",
+        help="Generate interactive HTML comparing Parse Tree and AST",
+    )
+    p_cmp.add_argument("file", help="Path to .sipl file")
+    p_cmp.add_argument("-o", "--output", help="Optional output HTML file path")
+
     return parser
 
 
@@ -297,6 +375,12 @@ def main(argv: Sequence[str] | None = None) -> int:
             return _cmd_run(args)
         if command == "trace":
             return _cmd_trace(args)
+        if command == "vis-tree":
+            return _cmd_vis_tree(args)
+        if command == "vis-ast":
+            return _cmd_vis_ast(args)
+        if command == "vis-compare":
+            return _cmd_vis_compare(args)
         raise CliInputError(f"Unknown command: {command}")
     except SiplSyntaxError as exc:
         return _emit_error(

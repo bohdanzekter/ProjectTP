@@ -54,6 +54,18 @@ def _get_lark_parser() -> Lark:
         propagate_positions=True,
     )
 
+@lru_cache(maxsize=1)
+def _get_concrete_lark_parser() -> Lark:
+    grammar_text = _GRAMMAR_FILE.read_text(encoding="utf-8")
+    return Lark(
+        grammar_text,
+        start="start",
+        parser="earley",
+        ambiguity="explicit",
+        propagate_positions=True,
+        keep_all_tokens=True,
+    )
+
 
 def _span_from_meta(meta: Meta, filename: str) -> SourceSpan:
     if meta.empty:
@@ -236,6 +248,14 @@ def parse_to_parse_tree(source: str, filename: str = "<stdin>") -> Tree[Token]:
         raise _format_syntax_error(exc, source, filename) from exc
     return tree
 
+def parse_to_concrete_tree(source: str, filename: str = "<stdin>") -> Tree[Token]:
+    """Parse SIPL source into a concrete Lark parse tree keeping all tokens."""
+    parser = _get_concrete_lark_parser()
+    try:
+        tree = parser.parse(source)
+    except UnexpectedInput as exc:
+        raise _format_syntax_error(exc, source, filename) from exc
+    return tree
 
 def parse(source: str, filename: str = "<stdin>") -> Program:
     """Parse SIPL source into a typed Program AST."""
