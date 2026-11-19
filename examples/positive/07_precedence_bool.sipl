@@ -1,0 +1,6 @@
+begin
+    if ¬(A > B) or B = 0 then
+        R := 1
+    else
+        R := 0
+end

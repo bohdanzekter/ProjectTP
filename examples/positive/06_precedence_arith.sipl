@@ -1,0 +1,3 @@
+begin
+    A := X + Y * Z - 2 * (X + 1)
+end

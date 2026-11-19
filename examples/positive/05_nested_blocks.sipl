@@ -1,0 +1,9 @@
+begin
+    begin
+        X := 1;
+        begin
+            Y := X + 2
+        end
+    end;
+    Z := Y * 3
+end

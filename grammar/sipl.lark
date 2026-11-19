@@ -1,0 +1,52 @@
+start: program
+
+program: "begin" stmt "end"
+
+?stmt: seq_stmt
+
+?seq_stmt: seq_stmt ";" simple_stmt   -> seq
+         | simple_stmt
+
+?simple_stmt: IDENT ":=" aexp                                     -> assign
+            | "if" bexp "then" simple_stmt "else" simple_stmt     -> if_stmt
+            | "while" bexp "do" simple_stmt                       -> while_stmt
+            | "begin" stmt "end"                                  -> block
+            | "skip"                                              -> skip_stmt
+
+?aexp: a_add
+
+?a_add: a_add "+" a_mul   -> add
+      | a_add "-" a_mul   -> sub
+      | a_mul
+
+?a_mul: a_mul "*" a_atom  -> mul
+      | a_atom
+
+?a_atom: NUMBER           -> int_lit
+       | "-" NUMBER       -> neg_int_lit
+       | IDENT            -> var_ref
+       | "(" aexp ")"
+
+?bexp: b_or
+
+?b_or: b_or OR_OP b_not   -> or_expr
+     | b_not
+
+?b_not: NOT_OP b_not      -> not_expr
+      | b_atom
+
+?b_atom: aexp "=" aexp    -> eq_expr
+       | aexp ">" aexp    -> gt_expr
+       | "(" bexp ")"
+
+OR_OP: "∨" | "or"
+NOT_OP: "¬" | "not"
+
+IDENT: /(?!(begin|end|if|then|else|while|do|skip|or|not)\b)[a-zA-Z_][a-zA-Z0-9_]*/
+NUMBER: /[0-9]+/
+
+COMMENT: /\/\/[^\n]*/
+WS: /[ \t\r\n]+/
+
+%ignore WS
+%ignore COMMENT
