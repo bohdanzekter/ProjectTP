@@ -21,16 +21,12 @@
 | REL-03 | Публікація Python-пакета в PyPI | 0.5 | Виконано |
 
 
-## Встановлення для розробки (у `.venv`)
+## Встановлення
+
+### З PyPI (у чистому середовищі)
 
 ```bash
 python -m venv .venv
-# Windows: .\.venv\Scripts\Activate.ps1
+# Windows PowerShell: .\.venv\Scripts\Activate.ps1
 # Linux/macOS: source .venv/bin/activate
-pip install -e ".[dev]"
-pytest
-
-#### Встанови пакети у `.venv`
-Переконайся, що `.venv` активоване, і виконай:
-```bash
-pip install -e ".[dev]"
+pip install sipl-toolkit-zekorfk

@@ -3,7 +3,7 @@ requires = ["setuptools>=68.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "sipl-toolkit"
+name = "sipl-toolkit-zekorfk"
 version = "0.1.0"
 description = "SIPL Language Toolkit: parser, AST, interpreter, trace, CLI, and visualization"
 readme = "README.md"
