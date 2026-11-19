@@ -4,11 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "sipl-toolkit-zekorfk"
-version = "0.1.1"
+version = "0.1.2"
 description = "SIPL Language Toolkit: parser, AST, interpreter, trace, CLI, and visualization"
 readme = "README.md"
 license = { text = "MIT" }
-authors = [{ name = "Твоє Ім'я" }]
+authors = [{ name = "Зектер Богдан" }]
 requires-python = ">=3.11"
 dependencies = [
     "lark>=1.1.9",

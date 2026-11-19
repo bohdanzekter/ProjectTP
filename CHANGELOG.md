@@ -3,10 +3,15 @@
 All notable changes to this project will be documented in this file.
 The format adheres to [Semantic Versioning](https://semver.org/).
 
+## [0.1.2] - 2026-11-19
+
+### Changed
+- Updated `README.md`.
+
 ## [0.1.1] - 2026-11-19
 
 ### Changed
-- Updated `README.md` with PyPI installation (`sipl-toolkit-zekorfk`) and CLI usage examples.
+- Updated `README.md` with PyPI installation (`sipl-toolkit-zekorfk`).
 
 ## [0.1.0] - 2026-11-19
 
