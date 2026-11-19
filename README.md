@@ -3,7 +3,6 @@
 Інструментарій для мови програмування **SIPL** (Simple Imperative Programming Language) в межах курсового проєкту з дисципліни «Теорія програмування».
 
 [![CI](https://github.com/bohdanzekter/ProjectTP/actions/workflows/ci.yml/badge.svg)]
-(https://github.com/bohdanzekter/ProjectTP/actions/workflows/ci.yml)
 
 ## Обраний трек: «Interpreter + Visualization
 
