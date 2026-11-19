@@ -22,6 +22,9 @@ dev = [
     "twine>=5.0",
 ]
 
+[project.scripts]
+sipl = "sipl.cli:entrypoint"
+
 [tool.setuptools.packages.find]
 where = ["src"]
 
