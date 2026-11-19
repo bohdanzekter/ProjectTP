@@ -22,6 +22,10 @@ def test_examples_count() -> None:
     assert len(POSITIVE_FILES) >= 10
     assert len(NEGATIVE_FILES) >= 10
 
+def test_packaged_grammar_matches_spec() -> None:
+    packaged = ROOT / "src" / "sipl" / "sipl.lark"
+    assert packaged.is_file()
+    assert packaged.read_text(encoding="utf-8") == GRAMMAR_PATH.read_text(encoding="utf-8")
 
 @pytest.mark.parametrize("path", POSITIVE_FILES, ids=lambda p: p.name)
 def test_positive_examples_parse(path: Path) -> None:

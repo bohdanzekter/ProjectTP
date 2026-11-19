@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from functools import lru_cache
-from pathlib import Path
+from importlib import resources
 from typing import Any
 
 from lark import (
@@ -40,12 +40,13 @@ from sipl.ast import (
 )
 from sipl.errors import SiplSyntaxError
 
-_GRAMMAR_FILE = Path(__file__).resolve().parents[2] / "grammar" / "sipl.lark"
 
+def _read_grammar_text() -> str:
+    return resources.files("sipl").joinpath("sipl.lark").read_text(encoding="utf-8")
 
 @lru_cache(maxsize=1)
 def _get_lark_parser() -> Lark:
-    grammar_text = _GRAMMAR_FILE.read_text(encoding="utf-8")
+    grammar_text = _read_grammar_text()
     return Lark(
         grammar_text,
         start="start",
@@ -54,9 +55,10 @@ def _get_lark_parser() -> Lark:
         propagate_positions=True,
     )
 
+
 @lru_cache(maxsize=1)
 def _get_concrete_lark_parser() -> Lark:
-    grammar_text = _GRAMMAR_FILE.read_text(encoding="utf-8")
+    grammar_text = _read_grammar_text()
     return Lark(
         grammar_text,
         start="start",
